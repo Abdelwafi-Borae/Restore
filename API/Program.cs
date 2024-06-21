@@ -11,9 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var connection=builder.Configuration.GetConnectionString("defaultconnection");
 builder.Services.AddDbContext<StoreContext>(opt=>opt.UseSqlite(connection));
-
+var Url=builder.Configuration.GetValue<string>("Url");
+builder.Services.AddCors(option=>{
+option.AddDefaultPolicy(builder=>
+builder.WithOrigins(Url).AllowAnyMethod().AllowAnyHeader());});
 var app = builder.Build();
-//my configration to seed data
+
 
 //dlf
 // Configure the HTTP request pipeline.
@@ -25,7 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors();
 app.UseAuthorization();
 
 app.MapControllers();
