@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { product } from "../../App/Models/product";
+import { Link } from "react-router-dom";
 function ProductCard({ product }: props) {
   return (
     <>
@@ -41,8 +42,12 @@ function ProductCard({ product }: props) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Add to Card</Button>
-          <Button size="small">View</Button>
+          <Button size="small" component={Link} to={`/catalog/${product.id}`}>
+            Add to Card
+          </Button>
+          <Button size="small" href={`/catalog/${product.id}`}>
+            View
+          </Button>
         </CardActions>
       </Card>
     </>

@@ -8,6 +8,12 @@ import {
   createTheme,
 } from "@mui/material";
 import { useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import HomePage from "../../Features/home/HomePage";
+import about from "../../Features/about/About";
+import Contact from "../../Features/contact/Contact";
+import ProductCard from "../../Features/Catalog/ProductCard";
+import ProductDetails from "../../Features/Catalog/ProductDetails";
 
 function App() {
   console.log("reder srart the app");
@@ -26,11 +32,21 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Header handleswithch={handleswithch} darkmode={darkmode} />
-      <Container>
-        <Catalog />
-      </Container>
+      <BrowserRouter>
+        <CssBaseline />
+        <Header handleswithch={handleswithch} darkmode={darkmode} />
+
+        <Container>
+          <Routes>
+            {/* <Catalog /> */}
+            <Route path="/*" Component={HomePage} />
+            <Route path="/about" Component={about} />
+            <Route path="/contact" Component={Contact} />
+            <Route path="/catalog" Component={Catalog} />
+            <Route path="/catalog/:id" Component={ProductDetails} />
+          </Routes>
+        </Container>
+      </BrowserRouter>
     </ThemeProvider>
   );
 }

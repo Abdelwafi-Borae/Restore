@@ -19,6 +19,7 @@ function Catalog() {
       .then((data) => setproducts(data));
     console.log("reder use effect");
   }, []);
+
   return (
     <>
       <ProductList products={products} />
