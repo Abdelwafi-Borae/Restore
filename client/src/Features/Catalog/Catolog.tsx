@@ -9,17 +9,20 @@ import {
 import { product } from "../../App/Models/product";
 import ProductList from "./ProductList";
 import { useEffect, useState } from "react";
+import agent from "../../App/API/agent";
+import LoadingComponent from "../../App/Layout/LoadingComponent";
 
 function Catalog() {
   const [products, setproducts] = useState<product[]>([]);
-
+  const [loading, setloading] = useState(true);
   useEffect(() => {
-    fetch("https://localhost:7031/Product")
-      .then((response) => response.json())
-      .then((data) => setproducts(data));
-    console.log("reder use effect");
+    agent.catalog.list
+      .then((product) => setproducts(product))
+      .catch((err) => console.log(err))
+      .finally(() => setloading(false));
+    console.log("reder use effect in catalog");
   }, []);
-
+  if (loading) return <LoadingComponent message="loading products" />;
   return (
     <>
       <ProductList products={products} />

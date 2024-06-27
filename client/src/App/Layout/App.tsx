@@ -8,12 +8,17 @@ import {
   createTheme,
 } from "@mui/material";
 import { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import HomePage from "../../Features/home/HomePage";
-import about from "../../Features/about/About";
+
 import Contact from "../../Features/contact/Contact";
 import ProductCard from "../../Features/Catalog/ProductCard";
 import ProductDetails from "../../Features/Catalog/ProductDetails";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import About from "../../Features/about/About";
+import NotFound from "../Errors/NotFound";
+import { Switch } from "react-router-dom";
 
 function App() {
   console.log("reder srart the app");
@@ -32,18 +37,23 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer position="bottom-right" hideProgressBar />
+
+      <CssBaseline />
       <BrowserRouter>
-        <CssBaseline />
         <Header handleswithch={handleswithch} darkmode={darkmode} />
 
         <Container>
           <Routes>
+            {/* <Switch> */}
             {/* <Catalog /> */}
-            <Route path="/*" Component={HomePage} />
-            <Route path="/about" Component={about} />
+            <Route path="/" Component={HomePage} />
+            <Route path="/about" Component={About} />
             <Route path="/contact" Component={Contact} />
             <Route path="/catalog" Component={Catalog} />
             <Route path="/catalog/:id" Component={ProductDetails} />
+            <Route path="*" Component={NotFound} />
+            {/* </Switch> */}
           </Routes>
         </Container>
       </BrowserRouter>

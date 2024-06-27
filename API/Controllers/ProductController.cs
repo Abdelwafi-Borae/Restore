@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
-{[Route("[Controller]")]
+{
+ [Route("api/[controller]")]
 [ApiController]
     public class ProductController:ControllerBase
     {
@@ -27,6 +28,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id){
             Product products=await _storeContext.products.FindAsync(id);
+            if (products == null) return BadRequest();
             return Ok(products);
         }
     }
