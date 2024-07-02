@@ -6,14 +6,22 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Typography,
 } from "@mui/material";
 import { product } from "../../App/Models/product";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import agent from "../../App/API/agent";
+import { LoadingButton } from "@mui/lab";
 function ProductCard({ product }: props) {
+  const [loading, setloading] = useState(false);
+  function handleadditem(productid: number) {
+    setloading(true);
+    agent.Basket.AddItem(productid)
+      .then((r) => console.log(r))
+      .catch((er) => console.log(er))
+      .finally(() => setloading(false));
+  }
   return (
     <>
       <Card>
@@ -42,9 +50,13 @@ function ProductCard({ product }: props) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" component={Link} to={`/catalog/${product.id}`}>
+          <LoadingButton
+            loading={loading}
+            onClick={() => handleadditem(product.id)}
+            size="small"
+          >
             Add to Card
-          </Button>
+          </LoadingButton>
           <Button size="small" href={`/catalog/${product.id}`}>
             View
           </Button>
@@ -58,4 +70,3 @@ export default ProductCard;
 interface props {
   product: product;
 }
-// /images/products/boot-core1.png

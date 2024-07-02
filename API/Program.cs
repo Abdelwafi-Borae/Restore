@@ -11,11 +11,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 var connection=builder.Configuration.GetConnectionString("defaultconnection");
-builder.Services.AddDbContext<StoreContext>(opt=>opt.UseSqlite(connection));
+builder.Services.AddDbContext<StoreContext>(opt=>opt.UseSqlServer(connection));
 var Url=builder.Configuration.GetValue<string>("Url");
 builder.Services.AddCors(option=>{
-option.AddDefaultPolicy(builder=>
-builder.WithOrigins(Url).AllowAnyMethod().AllowAnyHeader());});
+    option.AddDefaultPolicy(builder =>
+    builder.WithOrigins(Url).AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+});
 var app = builder.Build();
 app.UseMiddleware<ExceptionMidleWare>();
 

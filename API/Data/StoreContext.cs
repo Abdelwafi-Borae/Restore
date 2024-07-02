@@ -14,7 +14,11 @@ namespace API.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           modelBuilder.Entity<Product>().HasData(new Product
+            modelBuilder.Entity<Basket>()
+    .HasMany(e=>e.Items)
+    .WithOne(e=>e.Basket)
+    .HasForeignKey(e => e.BasketId);
+            modelBuilder.Entity<Product>().HasData(new Product
                 {Id=1,
                     Name = "Blue Code Gloves",
                     Description =
@@ -105,5 +109,6 @@ namespace API.Data
                 });
         }
         public DbSet<Product> products{get;set;}
+        public DbSet<Basket> Baskets{get;set;}
     }
 }

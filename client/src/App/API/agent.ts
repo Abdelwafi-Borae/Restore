@@ -1,8 +1,9 @@
 import { Details } from "@mui/icons-material";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 1000));
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
 axios.defaults.baseURL = "https://localhost:7031/api/";
+axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
   async (response) => {
     await sleep();
@@ -10,6 +11,7 @@ axios.interceptors.response.use(
   },
   (error: any) => {
     console.log("caught by interseptor");
+    console.log(error);
 
     const { status, data } = error.response!;
     switch (status) {
@@ -43,7 +45,7 @@ axios.interceptors.response.use(
 const responsebody = (response: AxiosResponse) => response.data;
 const request = {
   get: (url: string) => axios.get(url).then(responsebody),
-  post: (url: string, body: {}) => axios.get(url, body).then(responsebody),
+  post: (url: string, body: {}) => axios.post(url, body).then(responsebody),
   put: (url: string, body: {}) => axios.get(url, body).then(responsebody),
   delete: (url: string) => axios.delete(url).then(responsebody),
 };
@@ -58,5 +60,12 @@ const testerrors = {
   get500error: () => request.get("Buggy/getservererror"),
   getvalidationerror: () => request.get("Buggy/Getvalidationerror"),
 };
-const agent = { catalog, testerrors };
+const Basket = {
+  get: () => request.get("Basket"),
+  AddItem: (ProductId: number, Quantity = 1) =>
+    request.post(`Basket?ProductId={ProductId}&Quantity={Quantity}`, {}),
+  RemoveItem: (ProductId: number, Quantity = 1) =>
+    request.delete(`Basket?ProductId={ProductId}&Quantity={Quantity}`),
+};
+const agent = { catalog, testerrors, Basket };
 export default agent;

@@ -7,7 +7,7 @@ using API.Entities;
 namespace API.Data
 {
     public static  class DbIntializer
-    {
+    {//not used i gess
         public static void Intializer(StoreContext storeContext){
 
 if(storeContext.products.Any())return ;
