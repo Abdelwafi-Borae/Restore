@@ -13,12 +13,19 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import agent from "../../App/API/agent";
 import { LoadingButton } from "@mui/lab";
+import { useStorecontext } from "../../App/context/Storecontext";
+import { cerruncyformat } from "../../App/util/util";
 function ProductCard({ product }: props) {
+  const { setBasket } = useStorecontext();
   const [loading, setloading] = useState(false);
   function handleadditem(productid: number) {
     setloading(true);
+
     agent.Basket.AddItem(productid)
-      .then((r) => console.log(r))
+      .then((basket) => {
+        console.log(basket);
+        setBasket(basket);
+      })
       .catch((er) => console.log(er))
       .finally(() => setloading(false));
   }
@@ -43,7 +50,7 @@ function ProductCard({ product }: props) {
         />
         <CardContent>
           <Typography gutterBottom variant="h5" color="secondary">
-            ${(product.price / 100).toFixed(2)}
+            {cerruncyformat(product.price)}
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {product.brand}/{product.type}

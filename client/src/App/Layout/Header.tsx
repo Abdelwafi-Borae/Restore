@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useStorecontext } from "../context/Storecontext";
 const midlist = [
   { title: "catalog", path: "/catalog" },
   { title: "contact", path: "/contact" },
@@ -29,8 +30,11 @@ const navstyle = {
   textDecoration: "none",
 };
 function Header({ handleswithch, darkmode }: headerprops) {
+  const { basket } = useStorecontext();
+  const itemcount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
+
   return (
-    <AppBar position="static" sx={{ mb: 4 }}>
+    <AppBar position="static" sx={{ mb: 3 }}>
       <Toolbar
         sx={{
           display: "flex",
@@ -52,8 +56,13 @@ function Header({ handleswithch, darkmode }: headerprops) {
           ))}
         </List>
         <Box sx={{ display: "flex" }}>
-          <IconButton size="large" sx={{ color: "inhiret" }}>
-            <Badge badgeContent={4} color="secondary">
+          <IconButton
+            size="large"
+            sx={{ color: "inhiret" }}
+            component={Link}
+            to="/basket"
+          >
+            <Badge badgeContent={itemcount} color="secondary">
               <ShoppingCart />
             </Badge>
           </IconButton>

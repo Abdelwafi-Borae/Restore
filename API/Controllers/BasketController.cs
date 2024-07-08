@@ -60,11 +60,13 @@ public class BasketController : ControllerBase
     }
     private async Task<Basket?> RetrieveBasket()
     {
+        var cookies= Request.Cookies["buyerId"];
+        
         var Basket = await _storeContext.Baskets
             .Include(i => i.Items)
             .ThenInclude(p => p.Product)
-            .FirstOrDefaultAsync(b => b.BuyerId == Request.Cookies["buyerId"]);
-        if (Basket == null) return null;
+            .FirstOrDefaultAsync(b => b.BuyerId == Request.Cookies["buyerId"]); 
+        if (Basket == null)  return null;
         return Basket;
     }
     private Basket? CreateBasket()

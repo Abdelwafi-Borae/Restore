@@ -7,7 +7,7 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import HomePage from "../../Features/home/HomePage";
 
@@ -18,9 +18,28 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import About from "../../Features/about/About";
 import NotFound from "../Errors/NotFound";
-import { Switch } from "react-router-dom";
+// import { Switch } from "react-router-dom";
+import BasketPage from "../../Features/Basket/BasketPage";
+import { useStorecontext } from "../context/Storecontext";
+import { getCookie } from "../util/util";
+import agent from "../API/agent";
+import LoadingComponent from "./LoadingComponent";
+import CheckOut from "../../Features/checkout/CheckOut";
 
 function App() {
+  const { setBasket } = useStorecontext();
+  const [loading, setloading] = useState(true);
+  useEffect(() => {
+    const byerid = getCookie("buyerId");
+    if (byerid) {
+      agent.Basket.get()
+        .then((basket) => setBasket(basket))
+        .catch((err) => console.log(err))
+        .finally(() => setloading(false));
+    } else {
+      setloading(false);
+    }
+  }, [setBasket]);
   console.log("reder srart the app");
   const [darkmode, setdarkmode] = useState(false);
   const platemode = darkmode ? "dark" : "light";
@@ -34,7 +53,7 @@ function App() {
   function handleswithch() {
     setdarkmode(!darkmode);
   }
-
+  if (loading) return <LoadingComponent message="initialing App..." />;
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer position="bottom-right" hideProgressBar />
@@ -53,6 +72,8 @@ function App() {
             <Route path="/catalog" Component={Catalog} />
             <Route path="/catalog/:id" Component={ProductDetails} />
             <Route path="*" Component={NotFound} />
+            <Route path="/basket" Component={BasketPage} />
+            <Route path="/checkout" Component={CheckOut} />
             {/* </Switch> */}
           </Routes>
         </Container>
