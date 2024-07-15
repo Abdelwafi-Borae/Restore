@@ -11,18 +11,21 @@ import ProductList from "./ProductList";
 import { useEffect, useState } from "react";
 import agent from "../../App/API/agent";
 import LoadingComponent from "../../App/Layout/LoadingComponent";
+import {
+  useappdispatch,
+  useappselectore,
+} from "../../App/store/configureStore";
+import { fetchproductsasync, productselector } from "./CatalogSlice";
 
 function Catalog() {
-  const [products, setproducts] = useState<product[]>([]);
-  const [loading, setloading] = useState(true);
+  const products = useappselectore(productselector.selectAll);
+  const { productloaded, status } = useappselectore((state) => state.catalog);
+  const dispatch = useappdispatch();
   useEffect(() => {
-    agent.catalog.list
-      .then((product) => setproducts(product))
-      .catch((err) => console.log(err))
-      .finally(() => setloading(false));
-    console.log("reder use effect in catalog");
+    if (!productloaded) dispatch(fetchproductsasync());
   }, []);
-  if (loading) return <LoadingComponent message="loading products" />;
+  if (status.includes("pending"))
+    return <LoadingComponent message="loading products" />;
   return (
     <>
       <ProductList products={products} />

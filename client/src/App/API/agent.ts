@@ -1,7 +1,7 @@
 import { Details } from "@mui/icons-material";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 500));
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 0));
 axios.defaults.baseURL = "https://localhost:7031/api/";
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(

@@ -15,20 +15,30 @@ import agent from "../../App/API/agent";
 import { LoadingButton } from "@mui/lab";
 import { useStorecontext } from "../../App/context/Storecontext";
 import { cerruncyformat } from "../../App/util/util";
+import {
+  useappdispatch,
+  useappselectore,
+} from "../../App/store/configureStore";
+import { addbasketitemasync, setbasket } from "../Basket/Bsketslice";
 function ProductCard({ product }: props) {
-  const { setBasket } = useStorecontext();
-  const [loading, setloading] = useState(false);
-  function handleadditem(productid: number) {
-    setloading(true);
+  const dispatch = useappdispatch();
+  const { status } = useappselectore((state) => state.basket);
+  // const [loading, setloading] = useState(false);
+  // function handleadditem(productid: number) {
+  //   setloading(true);
 
-    agent.Basket.AddItem(productid)
-      .then((basket) => {
-        console.log(basket);
-        setBasket(basket);
-      })
-      .catch((er) => console.log(er))
-      .finally(() => setloading(false));
-  }
+  //   agent.Basket.AddItem(productid)
+  //     .then((basket) => {
+  //       console.log(basket);
+  //       dispatch(setbasket(basket));
+  //     })
+  //     .catch((er) => console.log(er))
+  //     .finally(() => setloading(false));
+  // }
+
+  // console.log("pendingadditem" + product.id);
+  // console.log(status);
+
   return (
     <>
       <Card>
@@ -58,8 +68,10 @@ function ProductCard({ product }: props) {
         </CardContent>
         <CardActions>
           <LoadingButton
-            loading={loading}
-            onClick={() => handleadditem(product.id)}
+            loading={status === "pendingadditem" + product.id}
+            onClick={() =>
+              dispatch(addbasketitemasync({ productid: product.id }))
+            }
             size="small"
           >
             Add to Card

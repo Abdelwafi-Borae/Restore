@@ -17,27 +17,37 @@ import agent from "../../App/API/agent";
 import NotFound from "../../App/Errors/NotFound";
 import LoadingComponent from "../../App/Layout/LoadingComponent";
 import { cerruncyformat } from "../../App/util/util";
-import { useStorecontext } from "../../App/context/Storecontext";
 import { LoadingButton } from "@mui/lab";
-import { Link } from "react-router-dom";
+import {
+  useappdispatch,
+  useappselectore,
+} from "../../App/store/configureStore";
+import {
+  addbasketitemasync,
+  removebasketitemasync,
+  setbasket,
+} from "../Basket/Bsketslice";
+import { fetchproductasync, productselector } from "./CatalogSlice";
 
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
-  const [product, setproduct] = useState<product | null>(null);
+  const product = useappselectore((state) =>
+    productselector.selectById(state, Number(id))
+  );
+  const { status: productstate } = useappselectore((state) => state.catalog);
   const [loading, setloading] = useState(true);
-  const { basket, setBasket, removeitem } = useStorecontext();
+  const { basket, status } = useappselectore((state) => state.basket);
+  const dispatch = useappdispatch();
+
   const [quantity, setquantity] = useState(0);
-  const [submitting, setsubmitting] = useState(false);
+
   const item = basket?.items.find((i) => i.productId === product?.id);
   useEffect(() => {
     if (item) setquantity(item.quantity);
-    agent.catalog
-      .details(Number(id))
-      .then((response) => setproduct(response))
-      .catch((err) => console.log(err))
-      .finally(() => setloading(false));
-  }, [id, item]);
-  if (loading) return <LoadingComponent message="loading product" />;
+    if (!product) dispatch(fetchproductasync(Number(id)));
+  }, [id, item, dispatch, product]);
+  if (productstate.includes("pending"))
+    return <LoadingComponent message="loading product" />;
   if (!product) return <NotFound />;
   function handleinputchange(event: any) {
     if (event.target.value >= 0) {
@@ -45,25 +55,25 @@ function ProductDetails() {
     }
   }
   function handleupdatecart() {
-    setsubmitting(true);
     //increse cart item  or add new item to the cart
     if (!item || quantity > item?.quantity!) {
       const updatedquantity = item ? quantity - item.quantity : quantity;
-      agent.Basket.AddItem(product?.id!, updatedquantity)
-        .then((basket) => {
-          setBasket(basket);
-          console.log("ssssss");
+      dispatch(
+        addbasketitemasync({
+          productid: product?.id!,
+          quantity: updatedquantity,
         })
-        .catch((er) => console.log(er))
-        .finally(() => setsubmitting(false));
+      );
     }
     //reduce quantity  item case
     else {
       const updatedquantity = item.quantity - quantity;
-      agent.Basket.RemoveItem(product?.id!, updatedquantity)
-        .then(() => removeitem(product?.id!, updatedquantity))
-        .catch((er) => console.log(er))
-        .finally(() => setsubmitting(false));
+      dispatch(
+        removebasketitemasync({
+          productid: product?.id!,
+          quantity: updatedquantity,
+        })
+      );
     }
   }
   return (
@@ -122,7 +132,7 @@ function ProductDetails() {
               disabled={
                 item?.quantity === quantity || (!item && quantity === 0)
               }
-              loading={submitting}
+              loading={status.includes("pending")}
               onClick={handleupdatecart}
               variant="contained"
               size="large"

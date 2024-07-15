@@ -36,7 +36,7 @@ public class BasketController : ControllerBase
         //if basket notfound create new basket
         if (Basket == null) Basket = CreateBasket();
         var product = await _storeContext.products.FindAsync(ProductId);
-        if (product == null) return NotFound();
+        if (product == null) BadRequest(new ProblemDetails { Title = "product not found" });
         Basket.AddItem(product, Quantity);
         var result = await _storeContext.SaveChangesAsync() > 0;
 

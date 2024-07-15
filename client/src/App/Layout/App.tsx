@@ -12,7 +12,7 @@ import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import HomePage from "../../Features/home/HomePage";
 
 import Contact from "../../Features/contact/Contact";
-import ProductCard from "../../Features/Catalog/ProductCard";
+
 import ProductDetails from "../../Features/Catalog/ProductDetails";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -26,20 +26,24 @@ import agent from "../API/agent";
 import LoadingComponent from "./LoadingComponent";
 import CheckOut from "../../Features/checkout/CheckOut";
 
+import { useappdispatch, useappselectore } from "../store/configureStore";
+import { setbasket } from "../../Features/Basket/Bsketslice";
+
 function App() {
-  const { setBasket } = useStorecontext();
+  const dispatch = useappdispatch();
   const [loading, setloading] = useState(true);
   useEffect(() => {
     const byerid = getCookie("buyerId");
+
     if (byerid) {
       agent.Basket.get()
-        .then((basket) => setBasket(basket))
+        .then((basket) => dispatch(setbasket(basket)))
         .catch((err) => console.log(err))
         .finally(() => setloading(false));
     } else {
       setloading(false);
     }
-  }, [setBasket]);
+  }, [dispatch]);
   console.log("reder srart the app");
   const [darkmode, setdarkmode] = useState(false);
   const platemode = darkmode ? "dark" : "light";

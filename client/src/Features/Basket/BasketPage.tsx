@@ -21,25 +21,22 @@ import { LoadingButton } from "@mui/lab";
 import BasketSummery from "./BasketSummery";
 import { cerruncyformat } from "../../App/util/util";
 import { Link } from "react-router-dom";
+import {
+  useappdispatch,
+  useappselectore,
+} from "../../App/store/configureStore";
+import {
+  addbasketitemasync,
+  removebasketitemasync,
+  setbasket,
+} from "./Bsketslice";
 
 function BasketPage() {
-  const { basket, setBasket, removeitem } = useStorecontext();
-  const [status, setstatus] = useState({ laoding: false, name: "" });
-  function handleadditem(productid: number, name: string) {
-    setstatus({ laoding: true, name });
-    agent.Basket.AddItem(productid)
-      .then((basket) => setBasket(basket))
-      .catch((er) => console.log(er))
-      .finally(() => setstatus({ laoding: false, name: "" }));
-  }
-  function handleremoveitem(productId: number, quantity = 1, name: string) {
-    setstatus({ laoding: true, name });
-    agent.Basket.RemoveItem(productId, quantity)
-      .then(() => removeitem(productId, quantity))
-      .catch((er) => console.log(er))
-      .finally(() => setstatus({ laoding: false, name: "" }));
-  }
-  if (!basket)
+  const { basket, status } = useappselectore((state) => state.basket);
+  const dispatch = useappdispatch();
+  console.log(basket);
+
+  if (!basket || basket.items.length === 0)
     return (
       <>
         <Typography variant="h3">Shopping Cart </Typography>
@@ -84,10 +81,16 @@ function BasketPage() {
                 <TableCell align="center">
                   <LoadingButton
                     loading={
-                      status.laoding && status.name === "rem" + row.productId
+                      status === "pendingremoveitem" + row.productId + "del"
                     }
                     onClick={() =>
-                      handleremoveitem(row.productId, 1, "rem" + row.productId)
+                      dispatch(
+                        removebasketitemasync({
+                          productid: row.productId,
+                          quantity: 1,
+                          name: "del",
+                        })
+                      )
                     }
                     color="error"
                   >
@@ -96,11 +99,13 @@ function BasketPage() {
 
                   {row.quantity}
                   <LoadingButton
-                    loading={
-                      status.laoding && status.name === "add" + row.productId
-                    }
+                    loading={status === "pendingadditem" + row.productId}
                     onClick={() =>
-                      handleadditem(row.productId, "add" + row.productId)
+                      dispatch(
+                        addbasketitemasync({
+                          productid: row.productId,
+                        })
+                      )
                     }
                     color="primary"
                   >
@@ -111,14 +116,13 @@ function BasketPage() {
 
                 <TableCell align="right">
                   <LoadingButton
-                    loading={
-                      status.laoding && status.name === "del" + row.productId
-                    }
+                    loading={status === "pendingremoveitem" + row.productId}
                     onClick={() =>
-                      handleremoveitem(
-                        row.productId,
-                        row.quantity,
-                        "del" + row.productId
+                      dispatch(
+                        removebasketitemasync({
+                          productid: row.productId,
+                          quantity: row.quantity,
+                        })
                       )
                     }
                     color="error"

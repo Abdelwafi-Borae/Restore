@@ -13,9 +13,10 @@ import {
 import { useStorecontext } from "../../App/context/Storecontext";
 import { cerruncyformat } from "../../App/util/util";
 import { Link } from "react-router-dom";
+import { useappselectore } from "../../App/store/configureStore";
 
 function BasketSummery() {
-  const { basket } = useStorecontext();
+  const { basket } = useappselectore((state) => state.basket);
 
   let Subtotal =
     basket?.items.reduce((sum, item) => sum + item.price * item.quantity, 0) ??

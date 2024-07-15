@@ -13,6 +13,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useStorecontext } from "../context/Storecontext";
+import { useappselectore } from "../store/configureStore";
 const midlist = [
   { title: "catalog", path: "/catalog" },
   { title: "contact", path: "/contact" },
@@ -30,7 +31,7 @@ const navstyle = {
   textDecoration: "none",
 };
 function Header({ handleswithch, darkmode }: headerprops) {
-  const { basket } = useStorecontext();
+  const { basket } = useappselectore((state) => state.basket);
   const itemcount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
