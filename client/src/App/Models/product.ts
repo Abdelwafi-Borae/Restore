@@ -8,3 +8,11 @@ export interface product {
   brand: string;
   quentityInStock: number;
 }
+export interface ProductParams {
+  OrederBy: string;
+  Searchterm?: string;
+  Types: string[];
+  Brands: string[];
+  PageNumber: number;
+  PageSize: number;
+}

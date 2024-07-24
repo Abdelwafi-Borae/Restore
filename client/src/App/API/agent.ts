@@ -1,12 +1,20 @@
 import { Details } from "@mui/icons-material";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { PaginatedResponse } from "../Models/Pagination";
 const sleep = () => new Promise((resolve) => setTimeout(resolve, 0));
 axios.defaults.baseURL = "https://localhost:7031/api/";
 axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
   async (response) => {
     await sleep();
+    const pagination = response.headers["pagination"];
+    if (pagination) {
+      response.data = new PaginatedResponse(
+        response.data,
+        JSON.parse(pagination)
+      );
+    }
     return response;
   },
   (error: any) => {
@@ -44,24 +52,16 @@ axios.interceptors.response.use(
 );
 const responsebody = (response: AxiosResponse) => response.data;
 const request = {
-  get: (url: string) => axios.get(url).then(responsebody),
-  post: (url: string, body: {}) =>
-    axios
-      .post(
-        url,
-        body
-        //,{
-        //   headers: { "Content-Type": "application/json" },
-        //   withCredentials: true,
-        // }
-      )
-      .then(responsebody),
+  get: (url: string, params?: URLSearchParams) =>
+    axios.get(url, { params }).then(responsebody),
+  post: (url: string, body: {}) => axios.post(url, body).then(responsebody),
   put: (url: string, body: {}) => axios.get(url, body).then(responsebody),
   delete: (url: string) => axios.delete(url).then(responsebody),
 };
 const catalog = {
-  list: request.get("product"),
+  list: (params: URLSearchParams) => request.get("product", params),
   details: (id: number) => request.get(`product/${id}`),
+  filter: () => request.get("product/Filters"),
 };
 const testerrors = {
   get400error: () => request.get("Buggy/BadRequest"),
