@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+ 
+    namespace API.RequestHelpers
 
-namespace API.RequestHelpers
+   
 {
     public class PagedList<T>:List<T>
     {

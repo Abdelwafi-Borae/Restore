@@ -14,6 +14,7 @@ import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useStorecontext } from "../context/Storecontext";
 import { useappselectore } from "../store/configureStore";
+import SignedInMenu from "./SignedInMenu";
 const midlist = [
   { title: "catalog", path: "/catalog" },
   { title: "contact", path: "/contact" },
@@ -21,7 +22,7 @@ const midlist = [
 ];
 const rightlist = [
   { title: "login", path: "/login" },
-  { title: "logout", path: "/logout" },
+  { title: "Register", path: "/register" },
 ];
 const navstyle = {
   color: "inherit",
@@ -32,6 +33,7 @@ const navstyle = {
 };
 function Header({ handleswithch, darkmode }: headerprops) {
   const { basket } = useappselectore((state) => state.basket);
+  const { user } = useappselectore((state) => state.Account);
   const itemcount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -59,7 +61,7 @@ function Header({ handleswithch, darkmode }: headerprops) {
         <Box sx={{ display: "flex" }}>
           <IconButton
             size="large"
-            sx={{ color: "inhiret" }}
+            sx={{ color: "inherit" }}
             component={Link}
             to="/basket"
           >
@@ -67,13 +69,22 @@ function Header({ handleswithch, darkmode }: headerprops) {
               <ShoppingCart />
             </Badge>
           </IconButton>
-          <List sx={{ display: "flex" }}>
-            {rightlist.map(({ title, path }) => (
-              <ListItem component={NavLink} to={path} key={path} sx={navstyle}>
-                {title.toUpperCase()}
-              </ListItem>
-            ))}
-          </List>
+          {user ? (
+            <SignedInMenu />
+          ) : (
+            <List sx={{ display: "flex" }}>
+              {rightlist.map(({ title, path }) => (
+                <ListItem
+                  component={NavLink}
+                  to={path}
+                  key={path}
+                  sx={navstyle}
+                >
+                  {title.toUpperCase()}
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
       </Toolbar>
     </AppBar>

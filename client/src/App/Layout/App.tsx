@@ -7,7 +7,7 @@ import {
   ThemeProvider,
   createTheme,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Route, Router, Routes } from "react-router-dom";
 import HomePage from "../../Features/home/HomePage";
 
@@ -27,23 +27,29 @@ import LoadingComponent from "./LoadingComponent";
 import CheckOut from "../../Features/checkout/CheckOut";
 
 import { useappdispatch, useappselectore } from "../store/configureStore";
-import { setbasket } from "../../Features/Basket/Bsketslice";
-
+import { fetchbasket, setbasket } from "../../Features/Basket/Bsketslice";
+import Register from "../../Features/Account/Register";
+import Login from "../../Features/Account/Login";
+import { createBrowserHistory } from "history";
+import { fetchcurrentuser } from "../../Features/Account/AccountSlice";
+import PrivateRoute from "./PrivateRoute";
+import CheckoutPage from "../../Features/checkout/CheckoutPage";
+import Orders from "../../Features/Orders/Orders";
+export const browserHistory = createBrowserHistory();
 function App() {
   const dispatch = useappdispatch();
   const [loading, setloading] = useState(true);
-  useEffect(() => {
-    const byerid = getCookie("buyerId");
-
-    if (byerid) {
-      agent.Basket.get()
-        .then((basket) => dispatch(setbasket(basket)))
-        .catch((err) => console.log(err))
-        .finally(() => setloading(false));
-    } else {
-      setloading(false);
+  const InitApp = useCallback(async () => {
+    try {
+      dispatch(fetchcurrentuser());
+      dispatch(fetchbasket());
+    } catch (err) {
+      console.log(err);
     }
   }, [dispatch]);
+  useEffect(() => {
+    InitApp().then(() => setloading(false));
+  }, [InitApp]);
   console.log("reder srart the app");
   const [darkmode, setdarkmode] = useState(false);
   const platemode = darkmode ? "dark" : "light";
@@ -77,7 +83,14 @@ function App() {
             <Route path="/catalog/:id" Component={ProductDetails} />
             <Route path="*" Component={NotFound} />
             <Route path="/basket" Component={BasketPage} />
-            <Route path="/checkout" Component={CheckOut} />
+
+            <Route path="/login" Component={Login} />
+            <Route path="/register" Component={Register} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/checkout" Component={CheckoutPage} />
+              <Route path="/orders" Component={Orders} />
+            </Route>
+
             {/* </Switch> */}
           </Routes>
         </Container>

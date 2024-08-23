@@ -27,50 +27,34 @@ function BasketSummery() {
 
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={4}></Grid>
+      {/* <Grid container spacing={2}>
+        <TableContainer component={Paper} sx={{ width: 610 }}>
+          <Divider sx={{ mb: 2 }} /> */}
 
-        <Grid item xs={6}>
-          <TableContainer component={Paper} sx={{ width: 610 }}>
-            <Divider sx={{ mb: 2 }} />
-
-            <Table>
-              <TableBody>
-                <TableRow>
-                  <TableCell>Subtotal</TableCell>
-                  <TableCell>{cerruncyformat(Subtotal)} </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Delevery Fee</TableCell>
-                  <TableCell>{cerruncyformat(DeleveryFee)}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Total Amount</TableCell>
-                  <TableCell>{cerruncyformat(TotalAmount)}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    *Order over $100 Qualify for free Delevery
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>
-                    <Button
-                      component={Link}
-                      to="/checkout"
-                      variant="contained"
-                      fullWidth
-                      size="large"
-                    >
-                      CkeckOut
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Grid>
-      </Grid>
+      <TableContainer component={Paper} variant={"outlined"}>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>Subtotal</TableCell>
+              <TableCell>{cerruncyformat(Subtotal)} </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Delevery Fee*</TableCell>
+              <TableCell>{cerruncyformat(DeleveryFee)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Total Amount</TableCell>
+              <TableCell>{cerruncyformat(TotalAmount)}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>*Order over $100 Qualify for free Delevery</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell></TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }

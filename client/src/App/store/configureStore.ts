@@ -5,12 +5,14 @@ import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { basketslice } from "../../Features/Basket/Bsketslice";
 import Catalog from "../../Features/Catalog/Catolog";
 import { catalogslice } from "../../Features/Catalog/CatalogSlice";
+import { accountslice } from "../../Features/Account/AccountSlice";
 
 export const store = configureStore({
   reducer: {
     counterr: counterslice.reducer,
     basket: basketslice.reducer,
     catalog: catalogslice.reducer,
+    Account: accountslice.reducer,
   },
 });
 
